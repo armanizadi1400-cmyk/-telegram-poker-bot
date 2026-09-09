@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <title>Telegram Poker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #07110d;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+    .app {
+      width: 100%;
+      max-width: 520px;
+      min-height: 100vh;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .balance {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: #14241d;
+      font-size: 14px;
+    }
+    .table {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1.35;
+      border-radius: 48% / 42%;
+      background: radial-gradient(circle, #17643e 0%, #0c422b 55%, #08291d 100%);
+      border: 10px solid #3a2415;
+      box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.45),
+        inset 0 0 30px rgba(0, 0, 0, 0.35);
+      margin: 10px 0 18px;
+    }
+    .pot {
+      position: absolute;
+      top: 46%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 7px 13px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.28);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .community {
+      position: absolute;
+      top: 58%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      gap: 5px;
+    }
+    .card {
+      width: 42px;
+      height: 58px;
+      border-radius: 7px;
+      background: #fff;
+      color: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    .player {
+      position: absolute;
+      width: 105px;
+      padding: 7px;
+      border-radius: 12px;
+      background: rgba(5, 15, 11, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      text-align: center;
+      transform: translate(-50%, -50%);
+    }
+    .player.active {
+      border: 2px solid #e7c45b;
+      box-shadow: 0 0 15px rgba(231, 196, 91, 0.35);
+    }
+    .avatar {
+      font-size: 24px;
+    }
+    .name {
+      margin-top: 3px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .chips {
+      margin-top: 3px;
+      font-size: 11px;
+      color: #d8d8d8;
+    }
+    .p1 { top: 8%; left: 50%; }
+    .p2 { top: 24%; left: 10%; }
+    .p3 { top: 76%; left: 10%; }
+    .p4 { top: 92%; left: 50%; }
+    .p5 { top: 76%; left: 90%; }
+    .p6 { top: 24%; left: 90%; }
+    .hand {
+      margin-bottom: 14px;
+    }
+    .hand-title {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-bottom: 7px;
+    }
+    .hole-cards {
+      display: flex;
+      gap: 8px;
+    }
+    .hole-cards .card {
+      width: 52px;
+      height: 72px;
+      font-size: 27px;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: auto;
+    }
+    button {
+      border: 0;
+      border-radius: 13px;
+      padding: 14px 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: white;
+      background: #1c3329;
+      cursor: pointer;
+    }
+    button:active {
+      transform: scale(0.97);
+    }
+    .primary {
+      background: #176b42;
+    }
+    .danger {
+      background: #7d2929;
+    }
+    .gold {
+      background: #80651f;
+    }
+    .raise {
+      grid-column: span 2;
+      background: #235b9a;
+    }
+    .status {
+      text-align: center;
+      margin: 12px 0;
+      font-size: 13px;
+      opacity: 0.75;
+    }
+    @media (max-width: 380px) {
+      .card {
+        width: 35px;
+        height: 50px;
+      }
+      .community {
+        gap: 3px;
+      }
+      .player {
+        width: 88px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+<div class="topbar">
+  <div class="brand">♠ Telegram Poker</div>
+  <div class="balance">🪙 1,000</div>
+</div>
+<section class="table">
+  <div class="pot">POT: 120 🪙</div>
+  <div class="community">
+    <div class="card">A♠</div>
+    <div class="card">K♥</div>
+    <div class="card">7♦</div>
+    <div class="card">9♣</div>
+    <div class="card">2♥</div>
+  </div>
+  <div class="player p1">
+    <div class="avatar">🤖</div>
+    <div class="name">Player 1</div>
+    <div class="chips">850 🪙</div>
+  </div>
+  <div class="player p2">
+    <div class="avatar">😎</div>
+    <div class="name">Player 2</div>
+    <div class="chips">1,120 🪙</div>
+  </div>
+  <div class="player p3">
+    <div class="avatar">🦊</div>
+    <div class="name">Player 3</div>
+    <div class="chips">740 🪙</div>
+  </div>
+  <div class="player p4 active">
+    <div class="avatar">👤</div>
+    <div class="name">You</div>
+    <div class="chips">1,000 🪙</div>
+  </div>
+  <div class="player p5">
+    <div class="avatar">🐯</div>
+    <div class="name">Player 5</div>
+    <div class="chips">920 🪙</div>
+  </div>
+  <div class="player p6">
+    <div class="avatar">🦁</div>
+    <div class="name">Player 6</div>
+    <div class="chips">1,340 🪙</div>
+  </div>
+</section>
+<section class="hand">
+  <div class="hand-title">YOUR HAND</div>
+  <div class="hole-cards">
+    <div class="card">Q♠</div>
+    <div class="card">J♠</div>
+  </div>
+</section>
+<div class="status">
+  Your turn · 18 seconds
+</div>
+<section class="actions">
+  <button class="danger">FOLD</button>
+  <button>CHECK</button>
+  <button class="primary">CALL 40</button>
+  <button class="gold">BET</button>
+  <button class="raise">RAISE</button>
+</section>
+  </main>
+</body>
+</html>
